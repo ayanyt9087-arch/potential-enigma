@@ -1,0 +1,102 @@
+
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#050b19">
+  <title>Win Face</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<header class="topbar">
+  <a class="brand" href="#">W<span>in Face</span></a>
+  <input id="search" class="search" placeholder="⌕ Search Win Face...">
+  <button onclick="showNotice('Welcome to Win Face!')">♡</button>
+</header>
+
+<div class="layout">
+  <aside class="sidebar">
+    <button class="nav active" onclick="showPage('home')">⌂ Home</button>
+    <button class="nav" onclick="showPage('explore')">⌕ Explore</button>
+    <button class="nav" onclick="showPage('challenges')">⚡ Challenges</button>
+    <button class="nav" onclick="showPage('create')">⊞ Create Post</button>
+    <button class="nav" onclick="showPage('profile')">◉ Profile</button>
+    <p class="muted">CONNECT · SHARE · GROW</p>
+  </aside>
+
+  <main class="main">
+    <section id="page-home">
+      <div class="panel">
+        <h3>✨ Stories</h3>
+        <div id="stories" class="stories"></div>
+      </div>
+
+      <div class="panel composer">
+        <h3>Create Something 🚀</h3>
+        <textarea id="caption" placeholder="What's on your mind?"></textarea>
+        <input id="photo" type="file" accept="image/*">
+        <img id="preview" class="preview" hidden alt="Photo preview">
+        <button class="gradient-button" onclick="publishPost()">Share Post ↗</button>
+      </div>
+
+      <div id="feed"></div>
+    </section>
+
+    <section id="page-explore" class="panel pad hidden">
+      <h2>Explore 🌌</h2>
+      <p>Discover creators and posts on Win Face.</p>
+    </section>
+
+    <section id="page-create" class="panel pad hidden">
+      <h2>Create your post ✨</h2>
+      <p>Share your ideas with the community.</p>
+      <button class="gradient-button" onclick="showPage('home')">Go to Composer</button>
+    </section>
+
+    <section id="page-challenges" class="panel pad hidden">
+      <h2>Daily Challenge ⚡</h2>
+      <p>Share something creative today!</p>
+      <button class="gradient-button" onclick="completeChallenge()">Complete Challenge +10 XP</button>
+      <p id="xp">XP: 0</p>
+    </section>
+
+    <section id="page-profile" class="panel pad hidden">
+      <div class="big-avatar">W</div>
+      <h2 id="profile-name">Win Face Creator</h2>
+      <p id="profile-email" class="muted">Your profile</p>
+      <p id="profile-count">0 posts</p>
+    </section>
+  </main>
+
+  <aside class="rightbar">
+    <div class="panel pad">
+      <div class="big-avatar">W</div>
+      <h3>Win Face Creator</h3>
+      <p class="muted">Dream big. Create boldly.</p>
+      <button class="soft-button" onclick="showPage('profile')">View Profile</button>
+    </div>
+
+    <div class="panel pad">
+      <h3>🔥 Trending Now</h3>
+      <p>#WinFace</p>
+      <p>#Nature</p>
+      <p>#Tech</p>
+      <p>#Travel</p>
+    </div>
+  </aside>
+</div>
+
+<nav class="mobile-nav">
+  <button onclick="showPage('home')">⌂<small>Home</small></button>
+  <button onclick="showPage('explore')">⌕<small>Explore</small></button>
+  <button onclick="showPage('create')">⊞<small>Create</small></button>
+  <button onclick="showPage('challenges')">⚡<small>Quest</small></button>
+  <button onclick="showPage('profile')">◉<small>Profile</small></button>
+</nav>
+
+<div id="toast" class="toast"></div>
+<script type="module" src="app.js"></script>
+</body>
+</html>
