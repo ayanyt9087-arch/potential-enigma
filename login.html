@@ -1,0 +1,242 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#ffffff">
+  <title>Login | Win Face</title>
+
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+      background: #f5f7fc;
+      color: #20243a;
+      font-family: Arial, sans-serif;
+    }
+
+    .login-card {
+      width: 100%;
+      max-width: 400px;
+      padding: 30px 24px;
+      background: #fff;
+      border: 1px solid #e5e9f2;
+      border-radius: 20px;
+      box-shadow: 0 12px 35px #263d6b12;
+    }
+
+    .logo {
+      text-align: center;
+      font-size: 34px;
+      font-weight: 800;
+      color: #4263eb;
+      margin-bottom: 8px;
+    }
+
+    .logo span {
+      color: #8b5cf6;
+    }
+
+    .subtitle {
+      text-align: center;
+      color: #7d879d;
+      margin-bottom: 26px;
+    }
+
+    label {
+      display: block;
+      font-size: 14px;
+      margin: 14px 0 7px;
+    }
+
+    input {
+      width: 100%;
+      padding: 13px;
+      border: 1px solid #dfe4ef;
+      border-radius: 10px;
+      font-size: 15px;
+      outline: none;
+      background: #fff;
+      color: #20243a;
+    }
+
+    input:focus {
+      border-color: #4263eb;
+      box-shadow: 0 0 0 3px #4263eb18;
+    }
+
+    .main-button {
+      width: 100%;
+      padding: 13px;
+      margin-top: 20px;
+      border: none;
+      border-radius: 10px;
+      color: white;
+      font-size: 16px;
+      font-weight: bold;
+      background: linear-gradient(100deg, #4263eb, #8b5cf6);
+      cursor: pointer;
+    }
+
+    .switch-text {
+      text-align: center;
+      font-size: 14px;
+      margin-top: 20px;
+      color: #667085;
+    }
+
+    .switch-text button {
+      border: none;
+      background: none;
+      color: #4263eb;
+      font-weight: bold;
+      cursor: pointer;
+    }
+
+    #message {
+      margin-top: 14px;
+      text-align: center;
+      font-size: 14px;
+      overflow-wrap: anywhere;
+    }
+
+    .back-link {
+      display: block;
+      text-align: center;
+      margin-top: 20px;
+      color: #4263eb;
+      text-decoration: none;
+      font-size: 14px;
+    }
+  </style>
+</head>
+
+<body>
+  <main class="login-card">
+    <div class="logo">Win <span>Face</span></div>
+    <p class="subtitle" id="subtitle">Welcome back! Login to continue.</p>
+
+    <form id="auth-form">
+      <label for="email">Email address</label>
+      <input
+        id="email"
+        type="email"
+        placeholder="you@example.com"
+        autocomplete="email"
+        required
+      >
+
+      <label for="password">Password</label>
+      <input
+        id="password"
+        type="password"
+        placeholder="Enter your password"
+        autocomplete="current-password"
+        minlength="6"
+        required
+      >
+
+      <button class="main-button" id="submit-btn" type="submit">
+        Login
+      </button>
+    </form>
+
+    <p class="switch-text">
+      <span id="switch-label">Don't have an account?</span>
+      <button id="switch-btn" type="button">Create account</button>
+    </p>
+
+    <p id="message" role="status" aria-live="polite"></p>
+
+    <a class="back-link" href="index.html">← Back to Win Face</a>
+  </main>
+
+  <script type="module">
+    import { auth } from "./firebase.js";
+    import {
+      signInWithEmailAndPassword,
+      createUserWithEmailAndPassword
+    } from "https://www.gstatic.com/firebasejs/12.19.0/firebase-auth.js";
+
+    const form = document.getElementById("auth-form");
+    const email = document.getElementById("email");
+    const password = document.getElementById("password");
+    const message = document.getElementById("message");
+    const submitBtn = document.getElementById("submit-btn");
+    const switchBtn = document.getElementById("switch-btn");
+    const switchLabel = document.getElementById("switch-label");
+    const subtitle = document.getElementById("subtitle");
+
+    let isSignup = false;
+
+    switchBtn.addEventListener("click", () => {
+      isSignup = !isSignup;
+
+      submitBtn.textContent = isSignup ? "Create Account" : "Login";
+      switchBtn.textContent = isSignup ? "Login instead" : "Create account";
+      switchLabel.textContent = isSignup
+        ? "Already have an account?"
+        : "Don't have an account?";
+
+      subtitle.textContent = isSignup
+        ? "Join Win Face today!"
+        : "Welcome back! Login to continue.";
+
+      password.autocomplete = isSignup
+        ? "new-password"
+        : "current-password";
+
+      message.textContent = "";
+    });
+
+    form.addEventListener("submit", async (event) => {
+      event.preventDefault();
+
+      message.textContent = "";
+      submitBtn.disabled = true;
+      submitBtn.textContent = "Please wait...";
+
+      try {
+        if (isSignup) {
+          await createUserWithEmailAndPassword(
+            auth,
+            email.value.trim(),
+            password.value
+          );
+        } else {
+          await signInWithEmailAndPassword(
+            auth,
+            email.value.trim(),
+            password.value
+          );
+        }
+
+        window.location.href = "index.html";
+      } catch (error) {
+        const errors = {
+          "auth/invalid-email": "Please enter a valid email.",
+          "auth/invalid-credential": "Email or password is incorrect.",
+          "auth/email-already-in-use": "This email is already registered.",
+          "auth/weak-password": "Choose a stronger password.",
+          "auth/network-request-failed": "Check your internet connection."
+        };
+
+        message.textContent =
+          errors[error.code] || "Error: " + error.message;
+      } finally {
+        submitBtn.disabled = false;
+        submitBtn.textContent = isSignup ? "Create Account" : "Login";
+      }
+    });
+  </script>
+</body>
+</html>
